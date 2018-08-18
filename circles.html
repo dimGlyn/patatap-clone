@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title></title>
+	<script type="text/javascript" src="assets/js/lib/paper-full.js"></script>
+	<script type="text/javascript" src="assets/js/lib/howler.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="assets/css/circles.css">
+
+	<script type="text/paperscript" canvas="myCanvas">
+
+		var arr = [
+			{
+				key : 'a',
+				src :'sounds/confetti.mp3'
+
+			},
+			{
+				key : 'b',
+				src : 'sounds/corona.mp3'
+			},
+			{
+				key : 'c',
+				src : 'sounds/bubbles.mp3'
+			},
+			{
+				key : 'd',
+				src : 'sounds/clay.mp3'
+			},
+			{
+				key : 'e',
+				src : 'sounds/dotted-spiral.mp3'
+			},
+			{
+				key : 'f',
+				src : 'sounds/flash-1.mp3'
+			},
+			{
+				key : 'g',
+				src : 'sounds/flash-2.mp3'
+			},
+			{
+				key : 'h',
+				src : 'sounds/flash-3.mp3'
+			},
+		
+			{
+				key : 'i',
+				src : 'sounds/glimmer.mp3'
+			},
+			{
+				key : 'j',
+				src : 'sounds/moon.mp3'
+			},
+			{
+				key : 'k',
+				src : 'sounds/pinwheel.mp3'
+			},
+			{
+				key : 'l',
+				src : 'sounds/piston-1.mp3'
+			},
+			{
+				key : 'm',
+				src : 'sounds/piston-2.mp3'
+			},
+			{
+				key : 'n',
+				src : 'sounds/piston-3.mp3'
+			},
+			{
+				key : 'o',
+				src : 'sounds/prism-1.mp3'
+			},
+			{
+				key : 'p',
+				src : 'sounds/prism-2.mp3'
+			},		
+			{	
+				key : 'q',
+				src : 'sounds/prism-3.mp3'
+			},
+			{
+				key : 'r',
+				src : 'sounds/splits.mp3'
+			},
+			{
+				key : 's',
+				src : 'sounds/squiggle.mp3'
+			},
+			{
+				key : 't',
+				src : 'sounds/strike.mp3'
+			},
+			{
+				key : 'u',
+				src : 'sounds/suspension.mp3'
+			},
+			{
+				key : 'v',
+				src : 'sounds/timer.mp3'
+			},
+			{
+				key : 'w',
+				src : 'sounds/ufo.mp3'
+			},
+			{
+				key : 'x',
+				src : 'sounds/veil.mp3'
+			},
+			{
+				key : 'y',
+				src : 'sounds/wipe.mp3'
+			},
+			{
+				key : 'z',
+				src : 'sounds/zig-zag.mp3'
+			}
+		];
+
+		var circles = [];
+
+		initColors();
+
+		function onKeyDown(event){
+
+			var color;
+
+			//Create animation
+			var maxPoint = new Point(view.size.width,view.size.height);
+			var randomPoint = Point.random();
+			var point = maxPoint*randomPoint;
+			circles.push(new Path.Circle(point, 500));
+
+			//Logic
+			arr.forEach( function(x){
+				if(x["key"]==event.key){
+					new Howl({ src:[x["src"]] }).play();
+					color = x["rgb"];
+				}
+			});
+
+			if(arr.every(function(x){
+				return x["key"] != event.key;
+			})){
+				new Howl({src: 'sounds/zig-zag.mp3'}).play();
+				color = "white"
+			};
+
+			//Assign correct color
+			circles[circles.length-1].fillColor = color;
+		}
+
+		function onFrame(event){
+			for(var i = 0; i < circles.length; i++){
+				circles[i].scale(.9);
+				circles[i].fillColor.hue += 1;
+				//Remove the circles from the array so it won't load a lot of memory
+				if(circles[i]["area"]<0.1){
+					circles[i].remove();
+					circles.splice(i,1);
+					i--;
+				}
+			}
+
+		}
+
+		function initColors(){
+			arr.forEach(function(x){
+				x["rgb"] = "rgb("+Math.floor(Math.random()*256)+", "+
+					Math.floor(Math.random()*256)+", "+
+					Math.floor(Math.random()*256)+")";
+			});
+			
+		}
+	
+	</script>
+
+</head>
+<body>
+	<canvas id="myCanvas" resize></canvas>
+</body>
+</html>
